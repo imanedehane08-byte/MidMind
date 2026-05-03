@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "dev": "npx kill-port 5050 5173 && concurrently --names \"server,client\" --prefix-colors \"blue,green\" \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "build": "npm run build --prefix client"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
+    "jsonwebtoken": "^9.0.3",
+    "openai": "^6.34.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

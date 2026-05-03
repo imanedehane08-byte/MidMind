@@ -1,0 +1,7 @@
+node_modules/
+.env
+*.log
+server/data/midmind.db
+server/data/midmind.db-shm
+server/data/midmind.db-wal
+client/dist/
