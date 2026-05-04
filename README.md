@@ -105,6 +105,31 @@ npm run dev
 
 ---
 
+## Automated Test
+
+The backend includes a unit test for AI quota-error detection.
+
+Test file:
+
+```txt
+server/src/services/ai.test.js
+```
+
+Run it with:
+
+```bash
+cd server
+npm test
+```
+
+Expected result:
+
+```txt
+2 tests passed
+```
+
+---
+
 ## User Roles
 
 | Role | Access |
