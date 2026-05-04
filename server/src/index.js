@@ -1,5 +1,5 @@
 import "dotenv/config";
-import "./data/store.js"; // seed admin account on first boot
+import "./models/store.js";
 import app from "./app.js";
 
 const port = Number(process.env.PORT) || 5050;

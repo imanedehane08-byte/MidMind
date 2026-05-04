@@ -68,14 +68,17 @@ cd server && npm install && cd ..
 cp server/.env.example server/.env
 ```
 
-Open `server/.env` and fill in the required values:
+Open `server/.env` and fill in the required values. The values below are examples only; keep your real secrets in `server/.env`, not in this README or in GitHub.
 
 ```env
 JWT_SECRET=replace-with-a-long-random-string
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=your-admin-password
 
-# AI provider — Groq is free and works well
+# Frontend URL allowed by CORS
+CLIENT_ORIGIN=http://localhost:5173
+
+# AI provider example
 AI_API_KEY=your-api-key
 AI_BASE_URL=https://api.groq.com/openai/v1
 AI_MODEL=llama-3.3-70b-versatile
