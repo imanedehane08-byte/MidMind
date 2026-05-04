@@ -70,8 +70,6 @@ function SessionProgress({ session }: { session: Session }) {
   );
 }
 
-// Tutor and student messages use different bubble styles to make the flow clear.
-
 function HintBubble({ hint, isLatest }: { hint: Hint; isLatest: boolean }) {
   return (
     <div className="animate-fadeIn" style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
@@ -201,8 +199,6 @@ function AttemptBubble({ attempt }: { attempt: Attempt }) {
   );
 }
 
-// Small confirmation so the student does not reveal the answer by accident.
-
 function GiveUpDialog({ onConfirm, onCancel, loading }: { onConfirm: () => void; onCancel: () => void; loading: boolean }) {
   return (
     <div
@@ -303,8 +299,6 @@ function GiveUpDialog({ onConfirm, onCancel, loading }: { onConfirm: () => void;
   );
 }
 
-// Final answer shown after the student solves it or reaches the limit.
-
 function SolutionPanel({ session }: { session: Session }) {
   return (
     <div
@@ -372,7 +366,6 @@ export default function Home() {
       .finally(() => setLoading(false));
   }, [sessionId]);
 
-  // Keep the newest hint or feedback visible after each step.
   useEffect(() => {
     if (session) {
       bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -447,7 +440,6 @@ export default function Home() {
     setOlderHintsExpanded(false);
   }
 
-  // Hints and attempts are stored separately, so merge them for the timeline.
   const conversation: Array<{ type: "hint"; item: Hint } | { type: "attempt"; item: Attempt }> = session
     ? [
         ...session.hints.map((h) => ({ type: "hint" as const, item: h })),
@@ -556,13 +548,9 @@ export default function Home() {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
-            {[
-              { step: "1", title: "Get a hint", desc: "The AI gives you a Socratic nudge — not the answer." },
-              { step: "2", title: "Write your attempt", desc: "Share your reasoning, even if you're not sure." },
-              { step: "3", title: "Earn the solution", desc: "After genuine effort, the full explanation is revealed." },
-            ].map(({ step, title, desc }) => (
+            {(["Get a hint", "Write your attempt", "Earn the solution"] as const).map((title, i) => (
               <div
-                key={step}
+                key={i}
                 style={{
                   background: "var(--bg-card)",
                   border: "1px solid var(--border)",
@@ -590,11 +578,15 @@ export default function Home() {
                     marginTop: 2,
                   }}
                 >
-                  {step}
+                  {i + 1}
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 13, color: "var(--text)", marginBottom: 3 }}>{title}</div>
-                  <div style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.5 }}>{desc}</div>
+                  <div style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.5 }}>
+                    {i === 0 && "The AI gives you a nudge in the right direction, not the answer."}
+                    {i === 1 && "Write what you think, even if you're unsure. Effort counts."}
+                    {i === 2 && "Once you've genuinely tried, the full solution is revealed."}
+                  </div>
                 </div>
               </div>
             ))}

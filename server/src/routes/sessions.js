@@ -21,21 +21,18 @@ const SESSION_STEP = Object.freeze({
 
 const GIVE_UP_PATTERNS = [
   /^i(\s+don'?t|\s+do\s+not)\s+know/i,
-  /^(idk|idek|idc)\b/i,
+  /^(idk|idek)\b/i,
   /^i\s+(have\s+)?no\s+(idea|clue)/i,
   /^(i\s+)?(give\s+up|giving\s+up)/i,
-  /^(show\s+me|just\s+tell\s+me|tell\s+me)\b/i,
-  /^i('m|\s+am)\s+(stuck|lost|confused|clueless)/i,
-  /^(no\s+idea|not\s+sure(\s+at\s+all)?|completely\s+lost)/i,
-  /^i\s+can'?t\s+(figure|solve|do|understand)/i,
+  /^i('m|\s+am)\s+(stuck|lost|confused)/i,
 ];
 
 const BYPASS_WORDS = new Set([
-  "yes", "no", "ok", "okay", "sure", "fine", "maybe", "whatever", "nothing", "none",
-  "idk", "lol", "wtf", "omg", "hmm", "hm", "uh", "um", "ah", "oh", "eh", "wow", "huh", "meh",
-  "yep", "nope", "nah", "yup", "welp", "dunno", "test", "hello", "hi", "hey", "bye",
-  "asdf", "qwerty", "abc", "xyz", "123", "foo", "bar", "baz", "blah", "random", "answer",
-  "solution", "help", "please", "thanks", "thank", "no idea", "don't know", "dont know",
+  "yes", "no", "ok", "okay", "sure", "maybe", "nothing",
+  "idk", "lol", "hmm", "uh", "um", "ah", "oh",
+  "yep", "nope", "nah", "dunno", "test", "hello", "hi",
+  "asdf", "qwerty", "abc", "foo", "bar", "blah", "random",
+  "help", "please", "thanks", "no idea", "don't know",
 ]);
 
 const KEYBOARD_ROWS = [
@@ -202,9 +199,9 @@ router.post("/sessions/:id/attempt", requireAuth, async (req, res) => {
   if (isGivingUp(attemptText)) {
     const priorGiveUps = session.attempts.filter((attempt) => attempt.isGaveUp).length;
     const encouragements = [
-      "It's okay to feel unsure - that's part of learning! Look at the hint again and take your best guess. Even a wrong attempt helps you understand more than skipping.",
-      "Give it a shot! You don't need to be certain. Based on the hint, what do you think the answer could be? There's no penalty for being wrong.",
-      "You've said you don't know a couple of times now - let's push through it. Re-read the hint carefully and write anything that comes to mind. If you're really stuck, use the 'Show answer' button below.",
+      "You don't need to be right — just give it a shot. What does the hint suggest to you?",
+      "Even a rough guess helps. Look at the hint again and write what comes to mind.",
+      "You've said you're stuck a few times now. Try writing anything you think, even if it's wrong. Or use the 'Show answer' button if you're truly stuck.",
     ];
     const feedback = encouragements[Math.min(priorGiveUps, encouragements.length - 1)];
     const newAttemptCount = session.attemptCount + 1;

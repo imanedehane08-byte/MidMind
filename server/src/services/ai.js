@@ -15,24 +15,20 @@ function pickModel() {
 }
 
 const TUTOR_PROMPT =
-  "You are a Socratic tutor helping a student work through a problem step by step.\n" +
-  "RULES - follow exactly:\n" +
-  "1. Output ONLY the hint text. No preamble, no reasoning, no internal analysis.\n" +
-  "2. Always address the student directly using 'you'. Never refer to them in third person ('the student', 'they', etc.).\n" +
-  "3. Give exactly ONE short, actionable hint (2-4 sentences max).\n" +
-  "4. End with exactly one guiding question directed at the student.\n" +
-  "5. Never reveal the final answer.\n" +
-  "6. If the question is ambiguous or unclear, ask the student to clarify - do not speculate.";
+  "You are a Socratic tutor. Guide the student toward the answer with hints — never give the answer away.\n" +
+  "Write one short hint (2-4 sentences) and end with a question aimed at the student.\n" +
+  "Always say 'you' when addressing the student. Output only the hint text, nothing else.";
 
 const EVALUATOR_PROMPT =
-  "You are an answer evaluator for a guided learning app. " +
-  "Your only job is to assess whether a student's attempt is correct and provide brief feedback. " +
-  "Always address the student directly using 'you' — never refer to them in third person ('the student', 'they', etc.). " +
-  "Always respond with valid JSON and nothing else - no preamble, no explanation outside the JSON.";
+  "You are evaluating a student's answer for a guided learning app.\n" +
+  "Write 2-3 sentences of feedback and decide if the answer is correct.\n" +
+  "Speak directly to the student using 'you'. Return only valid JSON:\n" +
+  '{"feedback": "...", "isCorrect": true|false}';
 
 const SOLUTION_PROMPT =
-  "You are an educator providing a clear final solution after a student has exhausted their attempts. " +
-  "Always respond with valid JSON and nothing else - no preamble, no explanation outside the JSON.";
+  "You are a teacher revealing the final answer after a student has worked through a problem.\n" +
+  "Return only valid JSON with no extra text:\n" +
+  '{"finalAnswer": "...", "explanation": "..."}';
 
 export function isQuotaError(err) {
   const status = err?.status;
@@ -118,11 +114,11 @@ async function callSolutionWriter(userContent) {
 }
 
 function fallbackFirstHint() {
-  return "Start by identifying what the question is really asking. What is the goal, and what information do you already have?";
+  return "Think about what the question is asking before jumping to an answer. What do you already know that might be relevant?";
 }
 
 function fallbackNextHint() {
-  return "Break the problem into smaller steps. What is the next small step you can take without solving everything at once?";
+  return "Try breaking it down — what's one smaller piece you can figure out first?";
 }
 
 export async function generateFirstHint(question) {
