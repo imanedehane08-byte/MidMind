@@ -1,3 +1,4 @@
+// Main guided learning page where students ask, receive hints, attempt, and review feedback.
 import { useEffect, useRef, useState } from "react";
 import { Check, Lightbulb, Flag, Plus, ChevronDown, ChevronUp, X, User } from "lucide-react";
 import { getSession, giveUp, requestHint, startSession, submitAttempt, type Attempt, type Hint, type Session } from "../lib/api";
@@ -11,6 +12,7 @@ const FLOW_STEPS = [
   { n: 3, title: "Earn the solution", desc: "Full explanation unlocked after effort"  },
 ];
 
+// Shows where the student is in the guided session flow.
 function SessionProgress({ session }: { session: Session }) {
   const activeStep = session.isRevealed ? 3
     : session.currentStep === STEP_READY_TO_ATTEMPT ? 2
@@ -70,6 +72,7 @@ function SessionProgress({ session }: { session: Session }) {
   );
 }
 
+// Renders one AI-generated hint message in the conversation.
 function HintBubble({ hint, isLatest }: { hint: Hint; isLatest: boolean }) {
   return (
     <div className="animate-fadeIn" style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
@@ -115,6 +118,7 @@ function HintBubble({ hint, isLatest }: { hint: Hint; isLatest: boolean }) {
   );
 }
 
+// Renders one student attempt and the tutor feedback attached to it.
 function AttemptBubble({ attempt }: { attempt: Attempt }) {
   const gaveUp = attempt.isGaveUp;
 
@@ -199,6 +203,7 @@ function AttemptBubble({ attempt }: { attempt: Attempt }) {
   );
 }
 
+// Asks for confirmation before revealing the final answer.
 function GiveUpDialog({ onConfirm, onCancel, loading }: { onConfirm: () => void; onCancel: () => void; loading: boolean }) {
   return (
     <div
@@ -299,6 +304,7 @@ function GiveUpDialog({ onConfirm, onCancel, loading }: { onConfirm: () => void;
   );
 }
 
+// Shows the final answer and explanation after the session is revealed.
 function SolutionPanel({ session }: { session: Session }) {
   return (
     <div
@@ -345,6 +351,7 @@ function SolutionPanel({ session }: { session: Session }) {
 }
 
 
+// Coordinates the full guided learning workflow on the main page.
 export default function Home() {
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -372,6 +379,7 @@ export default function Home() {
     }
   }, [session?.hints.length, session?.attempts.length, session?.isRevealed]);
 
+  // Starts a session by sending the student's question to the backend.
   async function handleStart() {
     if (!question.trim()) return;
     setError("");
@@ -387,6 +395,7 @@ export default function Home() {
     }
   }
 
+  // Submits the student's attempt and receives AI feedback.
   async function handleSubmitAttempt() {
     if (!sessionId || !attempt.trim() || !session || session.currentStep < 3 || session.isRevealed) return;
     setError("");
@@ -402,6 +411,7 @@ export default function Home() {
     }
   }
 
+  // Requests another hint after feedback has been received.
   async function handleRequestHint() {
     if (!sessionId || !session || session.currentStep < 3 || session.isRevealed) return;
     setError("");
@@ -416,6 +426,7 @@ export default function Home() {
     }
   }
 
+  // Reveals the final answer after the backend allows the give-up flow.
   async function handleGiveUp() {
     if (!sessionId) return;
     setShowGiveUpDialog(false);
@@ -431,6 +442,7 @@ export default function Home() {
     }
   }
 
+  // Clears local state so the student can begin a new question.
   function handleNewSession() {
     setSessionId(null);
     setSession(null);

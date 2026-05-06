@@ -1,3 +1,4 @@
+// Controller functions for register, login, and current-user authentication.
 import bcrypt from "bcryptjs";
 import { userDb } from "../models/db.js";
 import { createToken } from "../middleware/auth.js";
@@ -6,6 +7,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS) || 10;
 const MIN_PASSWORD_LENGTH = 8;
 
+// Removes private fields such as passwordHash before sending a user to the client.
 function sanitizeUser(user) {
   return {
     id: user.id,
@@ -16,6 +18,7 @@ function sanitizeUser(user) {
   };
 }
 
+// Creates a new user account, hashes the password, and returns a JWT.
 export async function register(req, res) {
   const name = String(req.body?.name || "").trim();
   const email = String(req.body?.email || "").trim().toLowerCase();
@@ -46,6 +49,7 @@ export async function register(req, res) {
   return res.status(201).json({ token: createToken(user), user: sanitizeUser(user) });
 }
 
+// Verifies email/password credentials and returns a JWT for valid users.
 export async function login(req, res) {
   const email = String(req.body?.email || "").trim().toLowerCase();
   const password = String(req.body?.password || "");
@@ -59,6 +63,7 @@ export async function login(req, res) {
   return res.json({ token: createToken(user), user: sanitizeUser(user) });
 }
 
+// Returns the currently authenticated user's public profile.
 export function me(req, res) {
   const user = userDb.findById(req.user.id);
   if (!user) return res.status(401).send("User not found");

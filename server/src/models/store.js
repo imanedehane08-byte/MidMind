@@ -1,3 +1,4 @@
+// Seeds the first admin user when the server starts and no admin exists yet.
 import bcrypt from "bcryptjs";
 import { userDb } from "./db.js";
 

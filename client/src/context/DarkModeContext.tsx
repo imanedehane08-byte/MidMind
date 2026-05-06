@@ -1,3 +1,4 @@
+// Provides dark/light theme state and persists the choice in localStorage.
 import { createContext, useContext, useEffect, useState } from "react";
 
 type DarkModeContextType = {
@@ -7,6 +8,7 @@ type DarkModeContextType = {
 
 const DarkModeContext = createContext<DarkModeContextType>({ darkMode: false, toggle: () => {} });
 
+// Applies the theme to the document and exposes a toggle function.
 export function DarkModeProvider({ children }: { children: React.ReactNode }) {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("midmind_dark") === "true";
@@ -24,6 +26,7 @@ export function DarkModeProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Lets components read or toggle the active theme.
 export function useDarkMode() {
   return useContext(DarkModeContext);
 }

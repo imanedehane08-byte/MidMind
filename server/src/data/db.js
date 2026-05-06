@@ -1,3 +1,4 @@
+// Legacy database module kept for compatibility; models/db.js is used by the MVC server.
 import Database from "better-sqlite3";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -120,14 +121,17 @@ function loadFull(row) {
 
 // User queries are grouped here so auth and admin routes do not touch SQL directly.
 export const userDb = {
+  // Finds one user by email during login/register checks.
   findByEmail(email) {
     return rowToUser(db.prepare("SELECT * FROM users WHERE email = ?").get(email));
   },
 
+  // Finds one user by database id.
   findById(id) {
     return rowToUser(db.prepare("SELECT * FROM users WHERE id = ?").get(id));
   },
 
+  // Creates a new user row and returns the saved user.
   create({ name, email, passwordHash, role = "user", createdAt }) {
     const info = db.prepare(
       "INSERT INTO users (name, email, password_hash, role, created_at) VALUES (?, ?, ?, ?, ?)"
@@ -135,10 +139,12 @@ export const userDb = {
     return rowToUser(db.prepare("SELECT * FROM users WHERE id = ?").get(info.lastInsertRowid));
   },
 
+  // Returns all users for admin views.
   all() {
     return db.prepare("SELECT * FROM users ORDER BY id").all().map(rowToUser);
   },
 
+  // Counts users for admin statistics.
   count() {
     return db.prepare("SELECT COUNT(*) as n FROM users").get().n;
   },
@@ -156,6 +162,7 @@ const SESSION_COL_MAP = {
 
 // Session helpers always return the session with its hints and attempts attached.
 export const sessionDb = {
+  // Creates a new learning session row.
   create({ userId, question, currentStep, hintCount, attemptCount, realAttemptCount, createdAt }) {
     const info = db.prepare(`
       INSERT INTO sessions
@@ -165,20 +172,24 @@ export const sessionDb = {
     return loadFull(db.prepare("SELECT * FROM sessions WHERE id = ?").get(info.lastInsertRowid));
   },
 
+  // Finds a complete session by id.
   findById(id) {
     return loadFull(db.prepare("SELECT * FROM sessions WHERE id = ?").get(id));
   },
 
+  // Lists all sessions belonging to one user.
   findByUserId(userId) {
     return db.prepare("SELECT * FROM sessions WHERE user_id = ? ORDER BY created_at DESC")
       .all(userId)
       .map(loadFull);
   },
 
+  // Lists every session for admin views.
   findAll() {
     return db.prepare("SELECT * FROM sessions ORDER BY created_at DESC").all().map(loadFull);
   },
 
+  // Updates only the allowed session fields.
   update(id, fields) {
     const sets = [];
     const vals = [];
@@ -192,6 +203,7 @@ export const sessionDb = {
     db.prepare(`UPDATE sessions SET ${sets.join(", ")} WHERE id = ?`).run(...vals);
   },
 
+  // Saves a generated hint for a session.
   addHint({ sessionId, content, hintNumber, createdAt }) {
     const info = db.prepare(
       "INSERT INTO hints (session_id, content, hint_number, created_at) VALUES (?, ?, ?, ?)"
@@ -199,6 +211,7 @@ export const sessionDb = {
     return rowToHint(db.prepare("SELECT * FROM hints WHERE id = ?").get(info.lastInsertRowid));
   },
 
+  // Saves a student attempt and its feedback.
   addAttempt({ sessionId, content, feedback, attemptNumber, isCorrect, isGaveUp, createdAt }) {
     const info = db.prepare(
       "INSERT INTO attempts (session_id, content, feedback, attempt_number, is_correct, is_gave_up, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
@@ -206,6 +219,7 @@ export const sessionDb = {
     return rowToAttempt(db.prepare("SELECT * FROM attempts WHERE id = ?").get(info.lastInsertRowid));
   },
 
+  // Calculates summary metrics for one user or all users.
   stats(userId = null) {
     const where = userId !== null ? "WHERE user_id = ?" : "";
     const args = userId !== null ? [userId] : [];
@@ -219,10 +233,12 @@ export const sessionDb = {
     `).get(...args);
   },
 
+  // Counts all sessions in the system.
   countAll() {
     return db.prepare("SELECT COUNT(*) as n FROM sessions").get().n;
   },
 
+  // Counts sessions where the final answer was revealed.
   countRevealed() {
     return db.prepare("SELECT COUNT(*) as n FROM sessions WHERE is_revealed = 1").get().n;
   },

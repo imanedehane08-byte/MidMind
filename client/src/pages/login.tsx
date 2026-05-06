@@ -1,7 +1,9 @@
+// Login page for existing users.
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "wouter";
 import { useAuth } from "../context/AuthContext";
 
+// Handles login form state and redirects after authentication.
 export default function LoginPage() {
   const { login, user, loading } = useAuth();
   const [, setLocation] = useLocation();
@@ -18,6 +20,7 @@ export default function LoginPage() {
     }
   }, [user, loading]);
 
+  // Sends the login form to AuthContext and shows API errors.
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");

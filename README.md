@@ -33,20 +33,29 @@ You can also click **Show answer** after at least 2 real attempts if you are gen
 
 ```
 midmind_fixed/
-├── client/              # React frontend
+├── client/                  # React frontend
 │   └── src/
-│       ├── pages/       # home, history, session-detail, login, register, admin
-│       ├── components/  # Layout, ProtectedRoute, AdminRoute
-│       ├── context/     # AuthContext, DarkModeContext
-│       └── lib/         # API client and shared types
-├── server/              # Express backend
+│       ├── pages/           # home, history, session-detail, login, register, admin
+│       ├── components/      # Layout, ProtectedRoute, AdminRoute
+│       ├── context/         # AuthContext, DarkModeContext
+│       └── lib/             # API client and shared types
+├── server/                  # Express backend (MVC architecture)
 │   └── src/
-│       ├── routes/      # auth, sessions, admin, health
-│       ├── services/    # AI integration (tutor, evaluator, solution writer)
-│       ├── middleware/  # JWT auth guard
-│       └── data/        # SQLite schema and query helpers
-└── package.json         # Root dev script — runs both apps together
+│       ├── models/          # Model — SQLite schema, queries, admin seed
+│       ├── controllers/     # Controller — business logic per domain
+│       ├── routes/          # Router — thin URL-to-controller mappings
+│       ├── services/        # AI integration (tutor, evaluator, solution writer)
+│       └── middleware/      # JWT auth guard
+└── package.json             # Root dev script — runs both apps together
 ```
+
+### Server MVC Layers
+
+| Layer | Folder | Responsibility |
+|---|---|---|
+| Model | `server/src/models/` | Database schema, all SQL queries (`db.js`), admin account seed (`store.js`) |
+| Controller | `server/src/controllers/` | Business logic — validates input, calls models and services, builds responses |
+| Router | `server/src/routes/` | Maps HTTP endpoints to middleware and controller functions only |
 
 ---
 

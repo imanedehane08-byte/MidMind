@@ -1,3 +1,4 @@
+// AI service: builds prompts, calls the model, and cleans model responses.
 import OpenAI from "openai";
 
 // One OpenAI-compatible client is enough because the base URL decides the provider.
@@ -10,6 +11,7 @@ const aiClient = new OpenAI({
   },
 });
 
+// Chooses the configured model, with a default for local development.
 function pickModel() {
   return process.env.AI_MODEL || process.env.OPENAI_MODEL || "llama-3.3-70b-versatile";
 }
@@ -30,6 +32,7 @@ const SOLUTION_PROMPT =
   "Return only valid JSON with no extra text:\n" +
   '{"finalAnswer": "...", "explanation": "..."}';
 
+// Detects quota-specific provider errors so routes can show the right message.
 export function isQuotaError(err) {
   const status = err?.status;
   const code = err?.code || err?.error?.code;
@@ -42,6 +45,7 @@ function extractJSON(raw) {
   return match ? match[0] : null;
 }
 
+// Safely parses model JSON without crashing when the model returns malformed text.
 function safeParseJSON(raw) {
   const jsonStr = extractJSON(raw);
   if (!jsonStr) return null;
@@ -52,6 +56,7 @@ function safeParseJSON(raw) {
   }
 }
 
+// Extracts the assistant message content from the OpenAI-compatible response.
 function extractContent(resp) {
   return (resp?.choices?.[0]?.message?.content || "").trim();
 }
@@ -74,6 +79,7 @@ function cleanHint(text) {
   return text.trim();
 }
 
+// Calls the model with the tutor prompt to generate a hint.
 async function callTutor(userContent) {
   const resp = await aiClient.chat.completions.create({
     model: pickModel(),
@@ -87,6 +93,7 @@ async function callTutor(userContent) {
   return cleanHint(extractContent(resp));
 }
 
+// Calls the model with the evaluator prompt to grade an attempt.
 async function callEvaluator(userContent) {
   const resp = await aiClient.chat.completions.create({
     model: pickModel(),
@@ -100,6 +107,7 @@ async function callEvaluator(userContent) {
   return extractContent(resp);
 }
 
+// Calls the model with the solution prompt to produce the final answer.
 async function callSolutionWriter(userContent) {
   const resp = await aiClient.chat.completions.create({
     model: pickModel(),
@@ -113,14 +121,17 @@ async function callSolutionWriter(userContent) {
   return extractContent(resp);
 }
 
+// Provides a safe first hint if the model returns empty text.
 function fallbackFirstHint() {
   return "Think about what the question is asking before jumping to an answer. What do you already know that might be relevant?";
 }
 
+// Provides a safe follow-up hint if the model returns empty text.
 function fallbackNextHint() {
   return "Try breaking it down — what's one smaller piece you can figure out first?";
 }
 
+// Generates the first hint shown immediately after a student asks a question.
 export async function generateFirstHint(question) {
   const userContent = [
     "A student has just submitted this question to start a learning session.",
@@ -133,6 +144,7 @@ export async function generateFirstHint(question) {
   return hintText || fallbackFirstHint();
 }
 
+// Generates a follow-up hint using recent hints and attempts as context.
 export async function generateNextHint({ question, previousHints, attempts, hintNumber }) {
   const previousHintsSummary = previousHints?.length
     ? `Previous hints given (${previousHints.length}):\n${previousHints
@@ -164,6 +176,7 @@ export async function generateNextHint({ question, previousHints, attempts, hint
   return hintText || fallbackNextHint();
 }
 
+// Evaluates one student attempt and returns feedback plus correctness.
 export async function evaluateAttempt({
   question,
   attempt,
@@ -226,6 +239,7 @@ export async function evaluateAttempt({
   }
 }
 
+// Generates the final solution after success, give-up, or max attempts.
 export async function generateFinalSolution({ question, hints, attempts, studentSolvedIt = false }) {
   try {
     const hintsSummary = hints?.length

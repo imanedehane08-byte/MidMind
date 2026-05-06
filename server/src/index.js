@@ -1,3 +1,4 @@
+// Starts the backend server after loading environment variables and seed data.
 import "dotenv/config";
 import "./models/store.js";
 import app from "./app.js";

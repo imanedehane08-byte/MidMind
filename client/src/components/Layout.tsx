@@ -1,9 +1,11 @@
+// Main application layout with sidebar navigation, theme toggle, and user controls.
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "../context/AuthContext";
 import { useDarkMode } from "../context/DarkModeContext";
 import { Home, Clock, ShieldCheck, LogOut, Sun, Moon, type LucideIcon } from "lucide-react";
 
+// Renders one sidebar navigation link with active and hover styling.
 function NavItem({
   href,
   label,
@@ -44,6 +46,7 @@ function NavItem({
   );
 }
 
+// Wraps every page with the shared sidebar and main content area.
 export function Layout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
   const { darkMode, toggle } = useDarkMode();

@@ -1,3 +1,4 @@
+// Defines session API endpoints for the guided learning flow.
 import { Router } from "express";
 import { requireAuth } from "../middleware/auth.js";
 import {

@@ -1,3 +1,4 @@
+// Handles JWT creation and route protection for authenticated/admin users.
 import jwt from "jsonwebtoken";
 import { userDb } from "../models/db.js";
 
@@ -6,6 +7,7 @@ if (!JWT_SECRET) {
   throw new Error("JWT_SECRET env var is required. Set it before starting.");
 }
 
+// Creates the signed token stored by the frontend after login/register.
 export function createToken(user) {
   return jwt.sign(
     { id: user.id, email: user.email, role: user.role },
@@ -14,6 +16,7 @@ export function createToken(user) {
   );
 }
 
+// Checks the Authorization header and attaches the logged-in user to req.user.
 export function requireAuth(req, res, next) {
   const authHeader = req.headers.authorization || "";
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
@@ -37,6 +40,7 @@ export function requireAuth(req, res, next) {
   }
 }
 
+// Allows only admin users to continue to protected admin endpoints.
 export function requireAdmin(req, res, next) {
   if (!req.user || req.user.role !== "admin") {
     return res.status(403).send("Forbidden");

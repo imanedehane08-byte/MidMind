@@ -1,7 +1,9 @@
+// Registration page for creating a new student account.
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "wouter";
 import { useAuth } from "../context/AuthContext";
 
+// Handles registration form state and redirects after account creation.
 export default function RegisterPage() {
   const { register, user, loading } = useAuth();
   const [, setLocation] = useLocation();
@@ -19,6 +21,7 @@ export default function RegisterPage() {
     }
   }, [user, loading]);
 
+  // Sends the registration form to AuthContext and shows validation errors.
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");

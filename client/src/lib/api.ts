@@ -1,3 +1,4 @@
+// Central API client used by React pages and contexts to call the Express backend.
 export type Hint = {
   id: number;
   sessionId: number;
@@ -51,6 +52,7 @@ export type User = {
 
 const API_BASE = (import.meta as any).env?.VITE_API_BASE ?? "/api";
 
+// Sends one HTTP request with JSON headers and the saved auth token.
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem("midmind_token");
 
@@ -78,6 +80,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   return res.json();
 }
 
+// Logs in a user and returns the JWT plus user profile.
 export function login(email: string, password: string) {
   return request<{ token: string; user: User }>("/auth/login", {
     method: "POST",
@@ -85,6 +88,7 @@ export function login(email: string, password: string) {
   });
 }
 
+// Registers a new user account.
 export function register(name: string, email: string, password: string) {
   return request<{ token: string; user: User }>("/auth/register", {
     method: "POST",
@@ -92,10 +96,12 @@ export function register(name: string, email: string, password: string) {
   });
 }
 
+// Gets the logged-in user's profile from the saved token.
 export function getMe() {
   return request<User>("/auth/me");
 }
 
+// Starts a new guided learning session.
 export function startSession(question: string) {
   return request<Session>("/sessions", {
     method: "POST",
@@ -103,10 +109,12 @@ export function startSession(question: string) {
   });
 }
 
+// Loads one session by id.
 export function getSession(id: number) {
   return request<Session>(`/sessions/${id}`);
 }
 
+// Sends a student attempt for AI feedback.
 export function submitAttempt(id: number, attempt: string) {
   return request<Session>(`/sessions/${id}/attempt`, {
     method: "POST",
@@ -114,30 +122,36 @@ export function submitAttempt(id: number, attempt: string) {
   });
 }
 
+// Requests the next hint in the current session.
 export function requestHint(id: number) {
   return request<Session>(`/sessions/${id}/hint`, {
     method: "POST"
   });
 }
 
+// Reveals the answer after the give-up rules allow it.
 export function giveUp(id: number) {
   return request<Session>(`/sessions/${id}/giveup`, {
     method: "POST"
   });
 }
 
+// Lists sessions visible to the current user.
 export function listSessions() {
   return request<Session[]>("/sessions");
 }
 
+// Loads aggregate session statistics for history/dashboard views.
 export function getSessionStats() {
   return request<Stats>("/sessions/stats");
 }
 
+// Loads all users for the admin dashboard.
 export function getAdminUsers() {
   return request<User[]>("/admin/users");
 }
 
+// Loads all sessions for the admin dashboard.
 export function getAdminSessions() {
   return request<Session[]>("/admin/sessions");
 }
@@ -151,6 +165,7 @@ export type AdminStats = {
   averageAttemptsUsed: number;
 };
 
+// Loads platform-wide admin statistics.
 export function getAdminStats() {
   return request<AdminStats>("/admin/stats");
 }

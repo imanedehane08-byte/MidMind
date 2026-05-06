@@ -1,7 +1,9 @@
+// Admin dashboard page for viewing users, sessions, and global learning stats.
 import { useEffect, useState } from "react";
 import { ShieldCheck, Users, Layers, CheckCircle2, TrendingUp, Lightbulb, MessageSquare, type LucideIcon } from "lucide-react";
 import { getAdminSessions, getAdminStats, getAdminUsers, type AdminStats, type Session, type User } from "../lib/api";
 
+// Displays one admin statistic with an icon and loading state.
 function StatCard({
   label,
   value,
@@ -39,6 +41,7 @@ function StatCard({
   );
 }
 
+// Shows placeholder rows while admin data is loading.
 function TableSkeleton({ rows = 3 }: { rows?: number }) {
   return (
     <div style={{ display: "grid", gap: 10 }}>
@@ -49,6 +52,7 @@ function TableSkeleton({ rows = 3 }: { rows?: number }) {
   );
 }
 
+// Loads admin data and renders users, sessions, and statistics.
 export default function AdminPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);

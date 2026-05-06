@@ -1,3 +1,4 @@
+// Defines auth-related API endpoints and connects them to auth controllers.
 import { Router } from "express";
 import { requireAuth } from "../middleware/auth.js";
 import { register, login, me } from "../controllers/authController.js";

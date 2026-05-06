@@ -1,9 +1,11 @@
+// Detailed read-only view of a completed or previous learning session.
 import { useEffect, useState } from "react";
 import { Link, useParams } from "wouter";
 import { format } from "date-fns";
 import { ArrowLeft, CheckCircle2, Lightbulb, MessageSquare, Check, X } from "lucide-react";
 import { getSession, type Session } from "../lib/api";
 
+// Placeholder layout shown while the session detail is loading.
 function LoadingSkeleton() {
   return (
     <div style={{ maxWidth: 860, margin: "0 auto", display: "grid", gap: 20 }}>
@@ -19,6 +21,7 @@ function LoadingSkeleton() {
   );
 }
 
+// Loads one session and renders its timeline of hints, attempts, and solution.
 export default function SessionDetail() {
   const params = useParams();
   const id = Number(params.id || 0);

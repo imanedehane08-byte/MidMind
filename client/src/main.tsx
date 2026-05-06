@@ -1,15 +1,19 @@
+// Entry point that mounts the React application into the page.
 import React, { Component, type ReactNode } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 
+// Catches unexpected rendering errors so the app shows a readable fallback screen.
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state = { error: null };
 
+  // Stores the thrown error in state so render can show the fallback UI.
   static getDerivedStateFromError(error: Error) {
     return { error };
   }
 
+  // Shows either the fallback error screen or the normal app children.
   render() {
     if (this.state.error) {
       return (

@@ -1,5 +1,7 @@
+// Controller functions for admin-only users, sessions, and platform statistics.
 import { userDb, sessionDb } from "../models/db.js";
 
+// Returns all users without exposing password hashes.
 export function getUsers(_req, res) {
   res.json(userDb.all().map((u) => ({
     id:        u.id,
@@ -10,10 +12,12 @@ export function getUsers(_req, res) {
   })));
 }
 
+// Returns every learning session for admin review.
 export function getSessions(_req, res) {
   res.json(sessionDb.findAll());
 }
 
+// Returns global dashboard numbers used by the admin page.
 export function getStats(_req, res) {
   const row = sessionDb.stats();
   const total    = row.total    || 0;

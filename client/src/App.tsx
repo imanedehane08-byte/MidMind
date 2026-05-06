@@ -1,3 +1,4 @@
+// Defines the frontend route structure and wraps the app with shared providers.
 import { Route, Switch, Router as WouterRouter } from "wouter";
 import { AuthProvider } from "./context/AuthContext";
 import { DarkModeProvider } from "./context/DarkModeContext";
@@ -13,6 +14,7 @@ import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 import AdminPage from "./pages/admin";
 
+// Maps each URL path to its page and applies protected/admin guards.
 function AppRouter() {
   return (
     <Layout>
@@ -50,6 +52,7 @@ function AppRouter() {
   );
 }
 
+// Provides global dark-mode and auth state to the full application.
 export default function App() {
   return (
     <DarkModeProvider>

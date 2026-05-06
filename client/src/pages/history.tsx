@@ -1,3 +1,4 @@
+// Session history page showing previous sessions and learning statistics.
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { format } from "date-fns";
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 import { getSessionStats, listSessions, type Session, type Stats } from "../lib/api";
 
+// Displays one history statistic with an icon and loading state.
 function StatCard({
   title,
   value,
@@ -71,6 +73,7 @@ function StatCard({
   );
 }
 
+// Shows a placeholder card while session history is loading.
 function SessionSkeleton() {
   return (
     <div
@@ -93,6 +96,7 @@ function SessionSkeleton() {
   );
 }
 
+// Loads the current user's sessions and summary statistics.
 export default function History() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);

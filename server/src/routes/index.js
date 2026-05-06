@@ -1,3 +1,4 @@
+// Combines all route modules into one router mounted under /api.
 import { Router } from "express";
 import healthRouter from "./health.js";
 import authRouter from "./auth.js";

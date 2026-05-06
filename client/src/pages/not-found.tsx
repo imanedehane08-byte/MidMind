@@ -1,5 +1,7 @@
+// Fallback page shown when the user visits an unknown route.
 import { Link } from "wouter";
 
+// Renders a friendly 404 page with a link back to the app.
 export default function NotFound() {
   return (
     <div

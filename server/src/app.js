@@ -1,3 +1,4 @@
+// Builds the Express application, applies global middleware, and mounts all API routes.
 import express from "express";
 import cors from "cors";
 import rateLimit from "express-rate-limit";

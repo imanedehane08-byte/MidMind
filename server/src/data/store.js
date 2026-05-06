@@ -1,3 +1,4 @@
+// Legacy seed file kept for compatibility; models/store.js is used by the MVC server.
 import bcrypt from "bcryptjs";
 import { userDb } from "./db.js";
 
